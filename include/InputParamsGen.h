@@ -6,41 +6,28 @@
 
 #include "ASTVisitor.h"
 
-namespace Cuda
-{
+namespace Cuda {
 
-	class InputParamsGen : public ASTVisitor
-	{
-	private:
+class InputParamsGen : public ASTVisitor {
+private:
+  std::vector<std::string> mInputParams;
+  std::string mTerminalIdentifier;
 
-		std::vector<std::string> mInputParams;
-		std::string mTerminalIdentifier;
+public:
+  InputParamsGen();
 
-	public:
+  std::vector<std::string> getInputParams() const;
 
-		InputParamsGen();
+  virtual void visit(Expr &E) override;
 
-		std::vector<std::string> getInputParams() const;
+  virtual void visit(TensorExpr &E) override;
 
-		virtual void visit(const AddExpr& expr) override;
+private:
+  void appendToTerminalIdentifier(uint16_t X);
 
-		virtual void visit(const SubtractExpr& expr) override;
+  void popFromTerminalIdentifier();
+};
 
-		virtual void visit(const MultiplyExpr& expr) override;
-
-		virtual void visit(const DivideExpr& expr) override;
-
-		virtual void visit(const TerminalExpr& expr) override;
-
-	private:
-
-		void processASMDExpr(const Expr& expr);
-
-		void appendToTerminalIdentifier(int x);
-
-		void popFromTerminalIdentifier();
-	};
-
-}
+} // namespace Cuda
 
 #endif // !_INPUT_PARAMS_GEN_H_

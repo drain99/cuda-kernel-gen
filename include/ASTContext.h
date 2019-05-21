@@ -8,73 +8,41 @@
 
 #include "Expr.h"
 
-namespace Cuda
-{
+namespace Cuda {
 
-	class ASTVisitor;
+class ASTVisitor;
 
-	template <typename T>
-	struct ExprOf {};
+template <typename T> struct ExprOf {};
 
-	class ASTContext
-	{
-	private:
+class ASTContext {
+private:
+  std::unique_ptr<Expr> mRootExpr;
+  std::vector<std::unique_ptr<Expr>> mExprs;
 
-		const std::string mFullTemplate;
-		std::unique_ptr<Expr> mRootExpr;
-		std::vector<std::unique_ptr<Expr>> mExprs;
+public:
+  template <typename RootExpr, typename... Args,
+            typename = std::enable_if_t<IsOperationExpr_v<RootExpr>>>
+  ASTContext(const ExprOf<RootExpr> &, Args &&... args);
 
-	public:
+  template <typename CurrExpr, typename... Args>
+  Expr *addNewExpr(Expr* parent, Args &&... args);
 
-		template <typename RootExpr>
-		ASTContext(const ExprOf<RootExpr>&,
-				   const std::string& fullTemplate);
+  Expr *getRootExpr();
 
-		template <typename CurrentExpr>
-		Expr& addNewExpr(Expr& parentExpr,
-						 llvm::StringRef templateStr);
+  void visitRoot(ASTVisitor &V);
+};
 
-		template <typename CurrentExpr>
-		Expr& addNewExpr(const ExprOf<CurrentExpr>&,
-						 Expr& parentExpr,
-						 llvm::StringRef templateStr);
+template <typename RootExpr, typename... Args, typename>
+inline ASTContext::ASTContext(const ExprOf<RootExpr> &, Args &&... args)
+    : mRootExpr(std::make_unique<RootExpr>(args...)) {}
 
-		Expr& getRootExpr() const;
-
-		llvm::StringRef getFullTemplate() const;
-
-		void visitRoot(ASTVisitor& visitor) const;
-	};
-
-	template<typename RootExpr>
-	inline ASTContext::ASTContext(const ExprOf<RootExpr>&,
-								  const std::string& fullTemplate)
-		: mFullTemplate(fullTemplate),
-		mRootExpr(std::make_unique<RootExpr>(nullptr,
-											 mFullTemplate))
-	{
-	}
-
-	template<typename CurrentExpr>
-	inline Expr& ASTContext::addNewExpr(Expr& parentExpr,
-										llvm::StringRef templateStr)
-	{
-		mExprs.push_back(
-			std::make_unique<CurrentExpr>(&parentExpr,
-										  templateStr));
-		parentExpr.addChild(mExprs.back().get());
-		return *mExprs.back();
-	}
-
-	template<typename CurrentExpr>
-	inline Expr& ASTContext::addNewExpr(const ExprOf<CurrentExpr>&,
-										Expr& parentExpr,
-										llvm::StringRef templateStr)
-	{
-		return addNewExpr<CurrentExpr>(parentExpr,
-									   templateStr);
-	}
-
+template <typename CurrExpr, typename... Args>
+inline Expr *ASTContext::addNewExpr(Expr* parent, Args &&... args) {
+  mExprs.push_back(std::make_unique<CurrExpr>(parent, args...));
+  parent->addChild(mExprs.back().get());
+  return mExprs.back().get();
 }
+
+} // namespace Cuda
 
 #endif // !_AST_CONTEXT_H_

@@ -6,29 +6,23 @@
 
 using namespace Cuda;
 
-int main()
-{
-	std::string fullTemplate =
-		"AddExpr<ConstantExpr<Tensor<int,100>>,ConstantExpr<Tensor<int,100>>>";
+int main() {
+  std::string fullTemplate = "AddExpr<AddExpr<Tensor<int,1000>,Tensor<float,1000>>,Tensor<long,1000>>";
 
-	ASTContext context = ASTContext(ExprOf<AddExpr>(),
-									fullTemplate);
+  ASTContext C = ASTContext(ExprOf<AddExpr>());
 
-	context.addNewExpr(ExprOf<TerminalExpr>(),
-					   context.getRootExpr(),
-					   context.getFullTemplate().substr(8, 36 - 8 + 1));
+  auto Add1 = C.addNewExpr<AddExpr>(C.getRootExpr());
 
-	context.addNewExpr(ExprOf<TerminalExpr>(),
-					   context.getRootExpr(),
-					   context.getFullTemplate().substr(38, 66 - 38 + 1));
+  C.addNewExpr<TensorExpr>(Add1, TensorType{"int", {1000}});
+  C.addNewExpr<TensorExpr>(Add1, TensorType{"float", {1000}});
+  C.addNewExpr<TensorExpr>(C.getRootExpr(), TensorType{"long", {1000}});
 
-	KernelManager KM;
-	auto& K = KM.createNewKernel(context,
-								 "Tensor<int,100>");
+  KernelManager KM;
+  auto &K = KM.createNewKernel(C, TensorType{"int", {100}});
 
-	std::cout << KM.getKernelCallStr(K) << std::endl
-		<< KM.getKernelDeclStr(K) << std::endl
-		<< KM.getKernelDefStr(K) << std::endl;
+  std::cout << KM.getKernelCallStr(K) << std::endl
+            << KM.getKernelDeclStr(K) << std::endl
+            << KM.getKernelDefStr(K) << std::endl;
 
-	return 0;
+  return 0;
 }

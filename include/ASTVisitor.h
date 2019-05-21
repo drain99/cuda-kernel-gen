@@ -3,20 +3,25 @@
 
 #include "Expr.h"
 
-namespace Cuda
-{
+namespace Cuda {
 
-	class ASTVisitor
-	{
-	public:
+class ASTVisitor {
+public:
+  virtual ~ASTVisitor() = 0;
 
-		virtual void visit(const AddExpr& expr) = 0;
-		virtual void visit(const SubtractExpr& expr) = 0;
-		virtual void visit(const MultiplyExpr& expr) = 0;
-		virtual void visit(const DivideExpr& expr) = 0;
-		virtual void visit(const TerminalExpr& expr) = 0;
-	};
+  virtual void visit(AddExpr &E);
 
-}
+  virtual void visit(SubtractExpr &E);
+
+  virtual void visit(MultiplyExpr &E);
+
+  virtual void visit(DivideExpr &E);
+
+  virtual void visit(TensorExpr &E);
+
+  virtual void visit(Expr &E);
+};
+
+} // namespace Cuda
 
 #endif // !_AST_VISITOR_H_

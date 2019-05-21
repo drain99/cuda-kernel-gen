@@ -1,102 +1,41 @@
 #include "Expr.h"
 #include "ASTVisitor.h"
 
-namespace Cuda
-{
+namespace Cuda {
 
-	Expr::Expr(Expr* parent,
-			   llvm::StringRef templateStr)
-		: mParent(parent), mTemplateStr(templateStr)
-	{
-	}
+Expr::Expr(Expr *parent) : mParent(parent) {}
 
-	Expr::~Expr() {}
+Expr::~Expr() {}
 
-	const SmallVector<Expr*>& Expr::getChilds() const
-	{
-		return mChilds;
-	}
+ChildVector<Expr *> &Expr::getChilds() { return mChilds; }
 
-	OptionalRef<const Expr> Expr::getParent() const
-	{
-		if (mParent)
-		{
-			return *mParent;
-		}
-		else
-		{
-			return std::nullopt;
-		}
-	}
+Expr *Expr::getParent() { return mParent; }
 
-	int Expr::getChildCount() const
-	{
-		return mChilds.size();
-	}
+uint16_t Expr::getChildCount() const { return mChilds.size(); }
 
-	llvm::StringRef Expr::getTemplateStr() const
-	{
-		return mTemplateStr;
-	}
+void Expr::addChild(Expr *C) { mChilds.push_back(C); }
 
-	void Expr::addChild(Expr* child)
-	{
-		mChilds.push_back(child);
-	}
+AddExpr::AddExpr(Expr *parent) : Expr(parent) {}
 
-	AddExpr::AddExpr(Expr* parent,
-					 llvm::StringRef templateStr)
-		: Expr(parent, templateStr)
-	{
-	}
+void AddExpr::accept(ASTVisitor &V) { V.visit(*this); }
 
-	void AddExpr::accept(ASTVisitor& visitor) const
-	{
-		visitor.visit({ *this });
-	}
+SubtractExpr::SubtractExpr(Expr *parent) : Expr(parent) {}
 
-	SubtractExpr::SubtractExpr(Expr* parent,
-							   llvm::StringRef templateStr)
-		: Expr(parent, templateStr)
-	{
-	}
+void SubtractExpr::accept(ASTVisitor &V) { V.visit(*this); }
 
-	void SubtractExpr::accept(ASTVisitor& visitor) const
-	{
-		visitor.visit({ *this });
-	}
+MultiplyExpr::MultiplyExpr(Expr *parent) : Expr(parent) {}
 
-	MultiplyExpr::MultiplyExpr(Expr* parent,
-							   llvm::StringRef templateStr)
-		: Expr(parent, templateStr)
-	{
-	}
+void MultiplyExpr::accept(ASTVisitor &V) { V.visit(*this); }
 
-	void MultiplyExpr::accept(ASTVisitor& visitor) const
-	{
-		visitor.visit({ *this });
-	}
+DivideExpr::DivideExpr(Expr *parent) : Expr(parent) {}
 
-	DivideExpr::DivideExpr(Expr* parent,
-						   llvm::StringRef templateStr)
-		: Expr(parent, templateStr)
-	{
-	}
+void DivideExpr::accept(ASTVisitor &V) { V.visit(*this); }
 
-	void DivideExpr::accept(ASTVisitor& visitor) const
-	{
-		visitor.visit({ *this });
-	}
+TensorExpr::TensorExpr(Expr *parent, const TensorType &T)
+    : Expr(parent), mTensorType(T) {}
 
-	TerminalExpr::TerminalExpr(Expr* parent,
-							   llvm::StringRef templateStr)
-		: Expr(parent, templateStr)
-	{
-	}
+void TensorExpr::accept(ASTVisitor &V) { V.visit(*this); }
 
-	void TerminalExpr::accept(ASTVisitor& visitor) const
-	{
-		visitor.visit({ *this });
-	}
+TensorType &TensorExpr::getTensorType() { return mTensorType; }
 
-}
+} // namespace Cuda

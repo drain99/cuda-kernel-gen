@@ -1,22 +1,10 @@
 #include "ASTContext.h"
 #include "ASTVisitor.h"
 
-namespace Cuda
-{
+namespace Cuda {
 
-	Expr& ASTContext::getRootExpr() const
-	{
-		return *mRootExpr;
-	}
+Expr *ASTContext::getRootExpr() { return mRootExpr.get(); }
 
-	llvm::StringRef ASTContext::getFullTemplate() const
-	{
-		return { mFullTemplate };
-	}
+void ASTContext::visitRoot(ASTVisitor &V) { mRootExpr->accept(V); }
 
-	void ASTContext::visitRoot(ASTVisitor& visitor) const
-	{
-		mRootExpr->accept(visitor);
-	}
-
-}
+} // namespace Cuda

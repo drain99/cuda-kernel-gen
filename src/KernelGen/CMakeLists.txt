@@ -6,7 +6,7 @@ set(CURR_SOURCES
 	"InputArgsGen.cpp"
 	"KernelManager.cpp"
 	"InputTypesGen.cpp"
-	"KernelHolder.cpp"
+	"KernelContext.cpp"
 )
 
 add_library(CKGKernelGen STATIC ${CURR_SOURCES})

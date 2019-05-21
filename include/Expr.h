@@ -1,101 +1,94 @@
 #ifndef _EXPR_H_
 #define _EXPR_H_
 
-#include <optional>
 #include <llvm/ADT/SmallVector.h>
 #include <llvm/ADT/StringRef.h>
+#include <type_traits>
 
-namespace Cuda
-{
+#include "TensorType.h"
 
-	class ASTVisitor;
+namespace Cuda {
 
-	template <typename V>
-	using OptionalRef = std::optional<
-		std::reference_wrapper<V>
-	>;
+class ASTVisitor;
 
-	template <typename V>
-	using SmallVector = llvm::SmallVector<V, 2>;
+struct ExprImpl {};
+struct OperationExprImpl {};
+struct TensorExprImpl {};
 
-	class Expr
-	{
-	protected:
+template <typename V> using ChildVector = llvm::SmallVector<V, 3>;
 
-		Expr* mParent;
-		SmallVector<Expr*> mChilds;
-		llvm::StringRef mTemplateStr;
+class Expr : private ExprImpl {
+protected:
+  Expr *mParent = nullptr;
+  ChildVector<Expr *> mChilds;
 
-	public:
+public:
+  Expr(Expr *parent = nullptr);
 
-		Expr(Expr* parent,
-			 llvm::StringRef templateStr);
+  virtual ~Expr();
 
-		virtual ~Expr();
+  virtual void accept(ASTVisitor &V) = 0;
 
-		virtual void accept(ASTVisitor& visitor) const = 0;
+  ChildVector<Expr *> &getChilds();
 
-		const SmallVector<Expr*>& getChilds() const;
+  Expr *getParent();
 
-		OptionalRef<const Expr> getParent() const;
+  uint16_t getChildCount() const;
 
-		int getChildCount() const;
+  void addChild(Expr *C);
+};
 
-		llvm::StringRef getTemplateStr() const;
+class AddExpr : public Expr, private OperationExprImpl {
+public:
+  AddExpr(Expr *parent = nullptr);
 
-		void addChild(Expr* child);
-	};
+  virtual void accept(ASTVisitor &V) override;
+};
 
-	class AddExpr : public Expr
-	{
-	public:
+class SubtractExpr : public Expr, private OperationExprImpl {
+public:
+  SubtractExpr(Expr *parent = nullptr);
 
-		AddExpr(Expr* parent,
-				llvm::StringRef templateStr);
+  virtual void accept(ASTVisitor &V) override;
+};
 
-		virtual void accept(ASTVisitor& visitor) const override;
-	};
+class MultiplyExpr : public Expr, private OperationExprImpl {
+public:
+  MultiplyExpr(Expr *parent = nullptr);
 
-	class SubtractExpr : public Expr
-	{
-	public:
+  virtual void accept(ASTVisitor &V) override;
+};
 
-		SubtractExpr(Expr* parent,
-					 llvm::StringRef templateStr);
+class DivideExpr : public Expr, private OperationExprImpl {
+public:
+  DivideExpr(Expr *parent = nullptr);
 
-		virtual void accept(ASTVisitor& visitor) const override;
-	};
+  virtual void accept(ASTVisitor &V) override;
+};
 
-	class MultiplyExpr : public Expr
-	{
-	public:
+class TensorExpr : public Expr, private TensorExprImpl {
+protected:
+  TensorType mTensorType;
 
-		MultiplyExpr(Expr* parent,
-					 llvm::StringRef templateStr);
+public:
+  TensorExpr(Expr *parent, const TensorType &T);
 
-		virtual void accept(ASTVisitor& visitor) const override;
-	};
+  virtual void accept(ASTVisitor &V) override;
 
-	class DivideExpr : public Expr
-	{
-	public:
+  TensorType &getTensorType();
+};
 
-		DivideExpr(Expr* parent,
-				   llvm::StringRef templateStr);
+template <typename... Ts>
+constexpr bool IsExpr_v = std::conjunction_v<std::is_base_of<ExprImpl, Ts>...>;
 
-		virtual void accept(ASTVisitor& visitor) const override;
-	};
+template <typename... Ts>
+constexpr bool IsOperationExpr_v =
+    std::conjunction_v<std::is_base_of<OperationExprImpl, Ts>...>;
 
-	class TerminalExpr : public Expr
-	{
-	public:
+template <typename... Ts>
+constexpr bool IsTensorExpr_v =
+    std::conjunction_v<std::is_base_of<TensorExprImpl, Ts>...>;
 
-		TerminalExpr(Expr* parent,
-					 llvm::StringRef templateStr);
-
-		virtual void accept(ASTVisitor& visitor) const override;
-	};
-
-}
+} // namespace Cuda
 
 #endif // !_EXPR_H_

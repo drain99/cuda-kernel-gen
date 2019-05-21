@@ -2,35 +2,22 @@
 #define _INPUT_TYPES_GEN_H_
 
 #include "ASTVisitor.h"
-#include "KernelHolder.h"
+#include "KernelContext.h"
 
-namespace Cuda
-{
+namespace Cuda {
 
-	class InputTypesGen : public ASTVisitor
-	{
-	private:
+class InputTypesGen : public ASTVisitor {
+private:
+  std::vector<TensorType> mInputTypes;
 
-		std::vector<TensorHolder> mInputTypes;
+public:
+  std::vector<TensorType> getInputTypes() const;
 
-	public:
+  virtual void visit(Expr &E) override;
 
-		std::vector<TensorHolder> getInputTypes() const;
+  virtual void visit(TensorExpr &E) override;
+};
 
-		virtual void visit(const AddExpr& expr) override;
-		
-		virtual void visit(const SubtractExpr& expr) override;
-
-		virtual void visit(const MultiplyExpr& expr) override;
-
-		virtual void visit(const DivideExpr& expr) override;
-
-		virtual void visit(const TerminalExpr& expr) override;
-
-	private:
-
-		void processASMDExpr(const Expr& expr);
-	};
-}
+} // namespace Cuda
 
 #endif // !_INPUT_TYPES_GEN_H_

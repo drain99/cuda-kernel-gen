@@ -2,6 +2,7 @@
 
 set(CURR_SOURCES 
 	"ASTContext.cpp" 
+	"ASTVisitor.cpp"
 	"Expr.cpp"
 )
 

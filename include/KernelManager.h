@@ -2,37 +2,34 @@
 #define _KERNEL_MANAGER_H_
 
 #include <vector>
+#include <string>
 
-#include "KernelHolder.h"
+#include "KernelContext.h"
 #include "ASTContext.h"
 
-namespace Cuda
-{
+namespace Cuda {
 
-	class KernelManager
-	{
-	private:
+class KernelManager {
+private:
+  std::vector<KernelContext> mKernels;
 
-		std::vector<KernelHolder> mKernels;
+public:
+  KernelContext &createNewKernel(ASTContext &C, const TensorType &outTT);
 
-	public:
+  KernelContext &get(uint32_t I);
 
-		const KernelHolder& createNewKernel(ASTContext& context,
-											const std::string& outputTensorType);
+  uint32_t size() const;
 
-		std::string getKernelCallStr(const KernelHolder& K) const;
+  std::string getKernelCallStr(const KernelContext &K) const;
 
-		std::string getKernelDeclStr(const KernelHolder& K) const;
+  std::string getKernelDeclStr(const KernelContext &K) const;
 
-		std::string getKernelDefStr(const KernelHolder& K) const;
+  std::string getKernelDefStr(const KernelContext &K) const;
 
-	private:
+private:
+  uint32_t getNumOfElems(const TensorType &T);
+};
 
-		TensorHolder parseTensorHolder(const std::string& tensorStr) const;
-
-		int getDimProduct(const TensorHolder& holder) const;
-	};
-
-}
+} // namespace Cuda
 
 #endif // !_KERNEL_MANAGER_H_

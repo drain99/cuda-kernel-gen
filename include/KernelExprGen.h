@@ -6,43 +6,35 @@
 
 #include "ASTVisitor.h"
 
-namespace Cuda
-{
-	
-	class KernelExprGen : public ASTVisitor
-	{
-	private:
-		
-		std::stringstream mKernelExpr;
-		std::string mTerminalIdentifier;
+namespace Cuda {
 
-	public:
-		
-		KernelExprGen();
+class KernelExprGen : public ASTVisitor {
+private:
+  std::stringstream mKernelExpr;
+  std::string mTerminalIdentifier;
 
-		std::string getKernelExpr() const;
+public:
+  KernelExprGen();
 
-		virtual void visit(const AddExpr& expr) override;
+  std::string getKernelExpr() const;
 
-		virtual void visit(const SubtractExpr& expr) override;
+  virtual void visit(AddExpr &E) override;
 
-		virtual void visit(const MultiplyExpr& expr) override;
+  virtual void visit(SubtractExpr &E) override;
 
-		virtual void visit(const DivideExpr& expr) override;
+  virtual void visit(MultiplyExpr &E) override;
 
-		virtual void visit(const TerminalExpr& expr) override;
+  virtual void visit(DivideExpr &E) override;
 
-	private:
+  virtual void visit(TensorExpr &E) override;
 
-		void processASMDExpr(const Expr& expr,
-							 char symbol);
+private:
+  void processASMDExpr(Expr &E, char S);
 
-		void processTerminalExpr();
+  void appendToIdentifier(uint16_t X);
 
-		void appendToIdentifier(int x);
-
-		void popFromIdentifier();
-	};
+  void popFromIdentifier();
+};
 
 }
 
