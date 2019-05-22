@@ -14,7 +14,7 @@ private:
   std::vector<KernelContext> mKernels;
 
 public:
-  KernelContext &createNewKernel(ASTContext &C, const TensorType &outTT);
+  KernelContext &createNewKernel(ASTContext &C);
 
   KernelContext &get(uint32_t I);
 

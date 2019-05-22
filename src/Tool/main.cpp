@@ -8,14 +8,14 @@
 using namespace Cuda;
 
 int main() {
-  TemplateParser TP("SubtractExpr<AddExpr<Tensor<int,101,10>,Tensor<int,101,10>>,Tensor<int,101,10>>",
-                    "Tensor<int,101,10>");
+  TemplateParser TP("MultiplyExpr<AddExpr<Tensor<int,10,10>,Tensor<float,10,10>"
+                    ",Tensor<float,10,10>>,AddExpr<Tensor<int,10,10>,Tensor<"
+                    "float,10,10>,Tensor<float,10,10>>,Tensor<float,10,10>>");
 
   ASTContext C = TP.createAST();
-  TensorType OT = TP.createOutputTensorType();
 
   KernelManager KM;
-  auto &K = KM.createNewKernel(C, OT);
+  auto &K = KM.createNewKernel(C);
 
   std::cout << KM.getKernelCallStr(K) << std::endl
             << KM.getKernelDeclStr(K) << std::endl

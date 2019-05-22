@@ -2,9 +2,8 @@
 #include<iostream>
 namespace Cuda {
 
-TemplateParser::TemplateParser(const std::string &exprTemplate,
-                               const std::string &outputTemplate)
-    : mET(exprTemplate), mOT(outputTemplate) {}
+TemplateParser::TemplateParser(const std::string &exprTemplate)
+    : mET(exprTemplate) {}
 
 ASTContext TemplateParser::createAST() {
   llvm::StringRef ET = mET;
@@ -29,17 +28,13 @@ ASTContext TemplateParser::createAST() {
     } else if (ch == '>') {
       --chevronNum;
     }
-    if (!chevronNum && (ch == ',' || (I + 2 == ET.size()))) {
-      parseCurrExpr(C, C.getRootExpr(),
-                    ET.substr(L, I - L + (I + 2 == ET.size())));
+    if (!chevronNum && ch == ',') {
+      parseCurrExpr(C, C.getRootExpr(), ET.substr(L, I - L));
       L = I + 1;
     }
   }
+  C.getRootExpr()->getType() = parseTensorExpr(ET.substr(L, ET.size() - L - 1));
   return C;
-}
-
-TensorType TemplateParser::createOutputTensorType() {
-  return parseTensorExpr(mOT);
 }
 
 void TemplateParser::parseCurrExpr(ASTContext &C, Expr *P, llvm::StringRef E) {
@@ -55,7 +50,7 @@ void TemplateParser::parseCurrExpr(ASTContext &C, Expr *P, llvm::StringRef E) {
   } else if (OpName == "DivideExpr") {
     curr = C.addNewExpr<DivideExpr>(P);
   } else if (OpName == "Tensor") {
-    C.addNewExpr<TensorExpr>(P, parseTensorExpr(E));
+    C.addNewExpr<TensorExpr>(parseTensorExpr(E), P);
   }
   if (!curr) {
     return;
@@ -69,11 +64,12 @@ void TemplateParser::parseCurrExpr(ASTContext &C, Expr *P, llvm::StringRef E) {
     } else if (ch == '>') {
       --chevronNum;
     }
-    if (!chevronNum && (ch == ',' || (I + 2 == E.size()))) {
-      parseCurrExpr(C, curr, E.substr(L, I - L + (I + 2 == E.size())));
+    if (!chevronNum && ch == ',') {
+      parseCurrExpr(C, curr, E.substr(L, I - L));
       L = I + 1;
     }
   }
+  curr->getType() = parseTensorExpr(E.substr(L, E.size() - L - 1));
 }
 
 TensorType TemplateParser::parseTensorExpr(llvm::StringRef T) {

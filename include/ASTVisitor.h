@@ -19,6 +19,8 @@ public:
 
   virtual void visit(TensorExpr &E);
 
+  virtual void visit(OperationExpr &E);
+
   virtual void visit(Expr &E);
 };
 

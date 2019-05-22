@@ -20,9 +20,12 @@ template <typename V> using ChildVector = llvm::SmallVector<V, 3>;
 class Expr : private ExprImpl {
 protected:
   Expr *mParent = nullptr;
+  TensorType mType = TensorType();
   ChildVector<Expr *> mChilds;
 
 public:
+  Expr(const TensorType &tensorType, Expr *parent = nullptr);
+  
   Expr(Expr *parent = nullptr);
 
   virtual ~Expr();
@@ -33,49 +36,65 @@ public:
 
   Expr *getParent();
 
+  TensorType &getType();
+
   uint16_t getChildCount() const;
 
   void addChild(Expr *C);
 };
 
-class AddExpr : public Expr, private OperationExprImpl {
+class OperationExpr : public Expr, private OperationExprImpl {
 public:
+  OperationExpr(const TensorType &tensorType, Expr *parent = nullptr);
+
+  OperationExpr(Expr *parent = nullptr);
+
+  TensorType getInputType(int32_t index);
+};
+
+class AddExpr : public OperationExpr, private OperationExprImpl {
+public:
+  AddExpr(const TensorType &tensorType, Expr *parent = nullptr);
+
   AddExpr(Expr *parent = nullptr);
 
   virtual void accept(ASTVisitor &V) override;
 };
 
-class SubtractExpr : public Expr, private OperationExprImpl {
+class SubtractExpr : public OperationExpr, private OperationExprImpl {
 public:
+  SubtractExpr(const TensorType &tensorType, Expr *parent = nullptr);
+
   SubtractExpr(Expr *parent = nullptr);
 
   virtual void accept(ASTVisitor &V) override;
 };
 
-class MultiplyExpr : public Expr, private OperationExprImpl {
+class MultiplyExpr : public OperationExpr, private OperationExprImpl {
 public:
+  MultiplyExpr(const TensorType &tensorType, Expr *parent = nullptr);
+
   MultiplyExpr(Expr *parent = nullptr);
 
   virtual void accept(ASTVisitor &V) override;
 };
 
-class DivideExpr : public Expr, private OperationExprImpl {
+class DivideExpr : public OperationExpr, private OperationExprImpl {
 public:
+  DivideExpr(const TensorType &tensorType, Expr *parent = nullptr);
+
   DivideExpr(Expr *parent = nullptr);
 
   virtual void accept(ASTVisitor &V) override;
 };
 
 class TensorExpr : public Expr, private TensorExprImpl {
-protected:
-  TensorType mTensorType;
-
 public:
-  TensorExpr(Expr *parent, const TensorType &T);
+  TensorExpr(const TensorType &tensorType, Expr *parent = nullptr);
+
+  TensorExpr(Expr *parent = nullptr);
 
   virtual void accept(ASTVisitor &V) override;
-
-  TensorType &getTensorType();
 };
 
 template <typename... Ts>

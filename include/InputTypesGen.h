@@ -13,7 +13,7 @@ private:
 public:
   std::vector<TensorType> getInputTypes() const;
 
-  virtual void visit(Expr &E) override;
+  virtual void visit(OperationExpr &E) override;
 
   virtual void visit(TensorExpr &E) override;
 };

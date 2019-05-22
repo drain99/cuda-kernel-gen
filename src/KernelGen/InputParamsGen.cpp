@@ -8,7 +8,7 @@ std::vector<std::string> InputParamsGen::getInputParams() const {
   return mInputParams;
 }
 
-void InputParamsGen::visit(Expr &E) {
+void InputParamsGen::visit(OperationExpr &E) {
   uint16_t I = 0;
 
   for (auto &&C : E.getChilds()) {

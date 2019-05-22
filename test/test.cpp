@@ -25,7 +25,10 @@ struct AddType<Tensor<V1, Dimensions...>, Tensor<V2, Dimensions...>> {
 template <typename T1, typename T2>
 using AddType_t = typename AddType<T1, T2>::type;
 
-template <typename E1, typename E2> class AddExpr {
+template <typename E1, typename E2,
+          typename OT =
+              AddType_t<typename E1::OutputType, typename E2::OutputType>>
+class AddExpr {
 public:
   E1 mExpr1;
   E2 mExpr2;
@@ -40,14 +43,7 @@ public:
 
   CUDAKERNELGEN OutputType eval() {
     OutputType result;
-    if (std::is_same_v<
-                      ThisType,
-                      AddExpr<AddExpr<Tensor<int, 1000>, Tensor<float, 1000>>,
-                              Tensor<long, 1000>>>) {
-      kernel__0(mExpr1.mExpr1.data(), mExpr1.mExpr2.data(),
-                mExpr2.data(), result.data());
-      std::cout << "called." << std::endl;
-    }
+
     return result;
   }
 };

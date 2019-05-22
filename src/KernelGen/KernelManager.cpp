@@ -7,17 +7,16 @@
 namespace Cuda {
 
 KernelContext &
-KernelManager::createNewKernel(ASTContext &C,
-                               const TensorType &outTT) {
+KernelManager::createNewKernel(ASTContext &C) {
   auto &K = mKernels.emplace_back();
 
   K.IndexCalc = "int idx = blockDim.x * blockIdx.x + threadIdx.x;";
   K.Attributes.emplace_back("__global__");
-  K.OutputTensorType = outTT;
+  K.OutputTensorType = C.getRootExpr()->getType();
   K.OutputArg = "result";
   K.OutputParam = "out";
   K.IndexCond =
-      "if (idx < " + std::to_string(getNumOfElems(outTT)) + ')';
+      "if (idx < " + std::to_string(getNumOfElems(K.OutputTensorType)) + ')';
 
   KernelExprGen KEG;
   C.visitRoot(KEG);

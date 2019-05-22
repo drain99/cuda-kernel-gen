@@ -25,7 +25,7 @@ public:
   ASTContext(const ExprOf<RootExpr> &, Args &&... args);
 
   template <typename CurrExpr, typename... Args>
-  Expr *addNewExpr(Expr* parent, Args &&... args);
+  Expr *addNewExpr(Args &&... args);
 
   Expr *getRootExpr();
 
@@ -37,9 +37,9 @@ inline ASTContext::ASTContext(const ExprOf<RootExpr> &, Args &&... args)
     : mRootExpr(std::make_unique<RootExpr>(args...)) {}
 
 template <typename CurrExpr, typename... Args>
-inline Expr *ASTContext::addNewExpr(Expr* parent, Args &&... args) {
-  mExprs.push_back(std::make_unique<CurrExpr>(parent, args...));
-  parent->addChild(mExprs.back().get());
+inline Expr *ASTContext::addNewExpr(Args &&... args) {
+  mExprs.push_back(std::make_unique<CurrExpr>(args...));
+  mExprs.back()->getParent()->addChild(mExprs.back().get());
   return mExprs.back().get();
 }
 

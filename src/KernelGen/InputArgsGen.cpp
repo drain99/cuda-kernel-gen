@@ -8,7 +8,8 @@ std::vector<std::string> InputArgsGen::getInputArgs() const {
   return mInputArgs;
 }
 
-void InputArgsGen::visit(Expr& E) { uint16_t I = 0;
+void InputArgsGen::visit(OperationExpr &E) {
+  uint16_t I = 0;
   for (auto &&C : E.getChilds()) {
     appendToTerminalIdentifier(++I);
     C->accept(*this);

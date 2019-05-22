@@ -11,15 +11,11 @@ namespace Cuda {
 class TemplateParser {
 private:
   const std::string mET;
-  const std::string mOT;
 
 public:
-  TemplateParser(const std::string &exprTemplate,
-                 const std::string &outputTemplate);
+  TemplateParser(const std::string &exprTemplate);
 
   ASTContext createAST();
-
-  TensorType createOutputTensorType();
 
 private:
   void parseCurrExpr(ASTContext &C, Expr *P, llvm::StringRef E);
