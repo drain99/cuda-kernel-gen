@@ -14,20 +14,32 @@ private:
   std::vector<KernelContext> mKernels;
 
 public:
-  KernelContext &createNewKernel(ASTContext &C);
+  uint32_t createNewKernel(ASTContext &C, const std::string &exprTemplate);
 
   KernelContext &get(uint32_t I);
 
+  const KernelContext &get(uint32_t I) const;
+
   uint32_t size() const;
 
-  std::string getKernelCallStr(const KernelContext &K) const;
+  void getKernelCallStr(uint32_t I, std::ostream& OS) const;
 
-  std::string getKernelDeclStr(const KernelContext &K) const;
+  void getKernelDeclStr(uint32_t I, std::ostream &OS) const;
 
-  std::string getKernelDefStr(const KernelContext &K) const;
+  void getKernelDefStr(uint32_t I, std::ostream &OS) const;
+
+  void getKernelNameStr(uint32_t I, std::ostream &OS) const;
+
+  void getKernelWrapperNameStr(uint32_t I, std::ostream &OS) const;
+
+  void getKernelWrapperCallStr(uint32_t I, std::ostream &OS) const;
+
+  void getKernelWrapperDeclStr(uint32_t I, std::ostream &OS) const;
+
+  void getKernelWrapperDefStr(uint32_t I, std::ostream &OS) const;
 
 private:
-  uint32_t getNumOfElems(const TensorType &T);
+  uint32_t getNumOfElems(const TensorType &T) const;
 };
 
 } // namespace Cuda

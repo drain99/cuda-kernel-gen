@@ -8,18 +8,28 @@
 using namespace Cuda;
 
 int main() {
-  TemplateParser TP("MultiplyExpr<AddExpr<Tensor<int,10,10>,Tensor<float,10,10>"
-                    ",Tensor<float,10,10>>,AddExpr<Tensor<int,10,10>,Tensor<"
-                    "float,10,10>,Tensor<float,10,10>>,Tensor<float,10,10>>");
+  TemplateParser TP("MultiplyExpr<AddExpr<Tensor<int,100>,Tensor<int,100>"
+                    ",Tensor<int,100>>,AddExpr<Tensor<int,100>,Tensor<"
+                    "int,100>,Tensor<int,100>>,Tensor<int,100>>");
 
   ASTContext C = TP.createAST();
 
   KernelManager KM;
-  auto &K = KM.createNewKernel(C);
+  auto I = KM.createNewKernel(C);
 
-  std::cout << KM.getKernelCallStr(K) << std::endl
-            << KM.getKernelDeclStr(K) << std::endl
-            << KM.getKernelDefStr(K) << std::endl;
+  std::stringstream SS;
+  KM.getKernelDeclStr(I, SS);
+  SS << std::endl;
+  KM.getKernelDefStr(I, SS);
+  SS << std::endl;
+  KM.getKernelWrapperCallStr(I, SS);
+  SS << std::endl;
+  KM.getKernelWrapperDeclStr(I, SS);
+  SS << std::endl;
+  KM.getKernelWrapperDefStr(I, SS);
+  SS << std::endl;
 
+  std::cout << SS.str() << std::endl;
+  
   return 0;
 }

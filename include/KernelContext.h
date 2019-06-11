@@ -20,6 +20,7 @@ public:
   std::string IndexCalc;
   std::string IndexCond;
   std::string KernelExpr;
+  std::string FullExprTemplate;
 
   KernelContext();
 

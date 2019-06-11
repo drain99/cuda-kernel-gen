@@ -1,0 +1,24 @@
+{
+  "configurations": [
+    {
+      "inheritEnvironments": [
+        "msvc_x64"
+      ],
+      "name": "x64-Release",
+      "includePath": [
+        "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v10.1\\include",
+        "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v10.1\\include",
+        "${env.INCLUDE}",
+        "${workspaceRoot}\\**",
+        "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v10.1\\include\\"
+      ],
+      "defines": [
+        "WIN32",
+        "NDEBUG",
+        "UNICODE",
+        "_UNICODE"
+      ],
+      "intelliSenseMode": "windows-msvc-x64",
+    }
+  ]
+}
