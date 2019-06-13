@@ -2,3 +2,4 @@
 build/
 vs_build/
 CMakeSettings.json
+build_debug/

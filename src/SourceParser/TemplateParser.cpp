@@ -1,5 +1,6 @@
 #include "TemplateParser.h"
-#include<iostream>
+#include <iostream>
+
 namespace Cuda {
 
 TemplateParser::TemplateParser(const std::string &exprTemplate)

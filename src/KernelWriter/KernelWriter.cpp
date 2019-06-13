@@ -50,14 +50,6 @@ void KernelWriter::writeKernelWrappersSource() {
 }
 
 void KernelWriter::writeKernelCalls() {
-  // write to a temprary file until required piece of is found.
-  // use a if constexpr block for each call which checks the full type of the
-  // object using std::decay_t<decltype(*this)>. so need to store the
-  // exprTemplateStr with each kernel to uniquely identify it.
-  std::stringstream SS;
-  std::fstream Ofs(mPathToIncludeDir + "\\EtExpr.h",
-                   std::ios::out | std::ios::in);
-  // clang ast gives the line and column, so that can be used to reach the position.
 }
 
 } // namespace Cuda
