@@ -52,7 +52,7 @@ void KernelWriter::writeKernelWrappersSource() {
 void KernelWriter::writeKernelCalls() {
   for (int32_t I = 0; I < mKernelManager.size(); ++I) {
     std::ifstream Ifs(mPathToIncludeDir + "\\EtExpr.h", std::ios::in);
-    std::ofstream Ofs(mPathToIncludeDir + "\\temp_et_expr.txt", std::ios::out);
+    std::ofstream Ofs(mPathToIncludeDir + "\\..\\temp\\backup_etexpr.txt", std::ios::out);
     auto &exprTemplate = mKernelManager.get(I).FullExprTemplate;
     auto Pos = exprTemplate.find("Expr");
     std::string CallSpaceStr =
@@ -76,7 +76,7 @@ void KernelWriter::writeKernelCalls() {
     }
     Ifs.close();
     Ofs.close();
-    Ifs.open(mPathToIncludeDir + "\\temp_et_expr.txt", std::ios::in);
+    Ifs.open(mPathToIncludeDir + "\\..\\temp\\backup_etexpr.txt", std::ios::in);
     Ofs.open(mPathToIncludeDir + "\\EtExpr.h", std::ios::out);
     while (std::getline(Ifs, Line)) {
       Ofs << Line << std::endl;

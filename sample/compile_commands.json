@@ -1,0 +1,7 @@
+[
+{
+  "directory": "E:/Desktop/CudaKernelGen/sample/out/build/x64-Release",
+  "command": "C:\\PROGRA~2\\MIB055~1\\2019\\COMMUN~1\\VC\\Tools\\MSVC\\1421~1.277\\bin\\HostX64\\x64\\cl.exe  /nologo /TP  -I..\\..\\..\\include -I..\\..\\..\\ckg\\include -I\"C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v10.1\\include\"  /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MD /O2 /Ob2 /DNDEBUG   -std:c++17 /Fosrc\\CMakeFiles\\CKGSample.dir\\main.cpp.obj /FdTARGET_COMPILE_PDB /FS -c E:\\Desktop\\CudaKernelGen\\sample\\src\\main.cpp",
+  "file": "E:/Desktop/CudaKernelGen/sample/src/main.cpp"
+}
+]

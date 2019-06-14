@@ -20,25 +20,7 @@ static llvm::cl::opt<std::string> CkgFolderPath(
 
 int main(int argc, const char **argv) {
 
-  std::vector<std::string> MyArgsVec;
-  MyArgsVec.emplace_back(argv[0]);
-  MyArgsVec.emplace_back("-extra-arg=-IC:\\Program Files\\NVIDIA GPU Computing "
-                      "Toolkit\\CUDA\\v10.1\\include");
-  MyArgsVec.emplace_back("-extra-arg=-std=c++17");
-  MyArgsVec.emplace_back("-cuda-path=\"C:\\Program Files\\NVIDIA GPU Computing "
-                         "Toolkit\\CUDA\\v10.1\\include\"");
-  MyArgsVec.emplace_back("-source-path=\"E:\\Desktop\\CudaKernelGen\\sample\"");
-  MyArgsVec.emplace_back("main.cpp");
-
-  int MyArgsC = MyArgsVec.size();
-
-  const char **MyArgsv = new const char *[MyArgsC];
-  for (int32_t I = 0; I < MyArgsC; ++I) {
-    MyArgsv[I] = MyArgsVec[I].c_str();
-  }
-
-  clang::tooling::CommonOptionsParser OptionsParser(MyArgsC, MyArgsv,
-                                                    MyToolCatagory);
+  clang::tooling::CommonOptionsParser OptionsParser(argc, argv, MyToolCatagory);
 
   std::vector<std::string> templateList;
   KernelManager KM;
@@ -70,6 +52,17 @@ int main(int argc, const char **argv) {
   KW.writeKernelsSource();
   KW.writeKernelWrappersHeader();
   KW.writeKernelWrappersSource();
+
+  std::cout << "Compiling kernels..." << std::endl;
+  std::string NvccCommand = "nvcc -c -O3 -odir=" + CkgFolderPath + "\\obj\\ " +
+                            CkgFolderPath + "\\include\\MyKernels.cu " +
+                            CkgFolderPath + "\\include\\MyKernelWrappers.cu";
+  system(NvccCommand.c_str());
+
+  // successfully created the obj's, now create executable by taking the objs into source.
+
+  // the source files are already known, also the 2 extras are known. all thats required
+  // are the compiler flags. get them from the compiler_database
 
   return 0;
 }

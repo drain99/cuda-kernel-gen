@@ -1,7 +1,7 @@
 #include <algorithm>
 #include <cuda_runtime.h>
-#include <type_traits>
 #include <memory>
+#include <type_traits>
 #include <utility>
 
 #include "MyKernelWrappers.h"
@@ -23,7 +23,9 @@ private:
   std::shared_ptr<V> mData;
 
 public:
-  Tensor() : mData(allocateUnifiedMemory<V>(Dimensions), UnifiedMemoryDeleter<V>{}) {}
+  Tensor()
+      : mData(allocateUnifiedMemory<V>(Dimensions), UnifiedMemoryDeleter<V>{}) {
+  }
 
   Tensor(const V &value) : Tensor() {
     std::fill_n(mData.get(), Dimensions, value);
@@ -122,6 +124,9 @@ public:
   CUDAKERNELGEN OT eval() {
     OT result(0);
 	/*SubtractExpr Call Space*/
+	if constexpr (std::is_same_v<std::decay_t<decltype(*this)>,SubtractExpr<AddExpr<MultiplyExpr<AddExpr<Tensor<int,100>,Tensor<int,100>,Tensor<int,100>>,SubtractExpr<AddExpr<Tensor<int,100>,Tensor<int,100>,Tensor<int,100>>,Tensor<float,100>,Tensor<float,100>>,Tensor<float,100>>,Tensor<int,100>,Tensor<float,100>>,Tensor<int,100>,Tensor<float,100>>>) {
+	kernel_wrapper__1((*this).mExpr1.mExpr1.mExpr1.mExpr1.data(), (*this).mExpr1.mExpr1.mExpr1.mExpr2.data(), (*this).mExpr1.mExpr1.mExpr2.mExpr1.mExpr1.data(), (*this).mExpr1.mExpr1.mExpr2.mExpr1.mExpr2.data(), (*this).mExpr1.mExpr1.mExpr2.mExpr2.data(), (*this).mExpr1.mExpr2.data(), (*this).mExpr2.data(), result.data());
+	}
 	cudaDeviceSynchronize();
     return result;
   }
@@ -167,6 +172,9 @@ public:
   CUDAKERNELGEN OT eval() {
     OT result(0);
 	/*MultiplyExpr Call Space*/
+	if constexpr (std::is_same_v<std::decay_t<decltype(*this)>,MultiplyExpr<AddExpr<Tensor<int,100>,Tensor<int,100>,Tensor<int,100>>,SubtractExpr<AddExpr<Tensor<int,100>,Tensor<int,100>,Tensor<int,100>>,Tensor<float,100>,Tensor<float,100>>,Tensor<float,100>>>) {
+	kernel_wrapper__0((*this).mExpr1.mExpr1.data(), (*this).mExpr1.mExpr2.data(), (*this).mExpr2.mExpr1.mExpr1.data(), (*this).mExpr2.mExpr1.mExpr2.data(), (*this).mExpr2.mExpr2.data(), result.data());
+	}
 	cudaDeviceSynchronize();
     return result;
   }
@@ -220,10 +228,10 @@ public:
 template <typename E1, typename E2>
 DivideExpr(E1 &&, E2 &&)->DivideExpr<std::decay_t<E1>, std::decay_t<E2>>;
 
-template <typename E1, typename E2,
-          typename = std::void_t<
-              DivideType_t<typename std::decay_t<E1>::OutputType,
-                             typename std::decay_t<E2>::OutputType>>>
+template <
+    typename E1, typename E2,
+    typename = std::void_t<DivideType_t<typename std::decay_t<E1>::OutputType,
+                                        typename std::decay_t<E2>::OutputType>>>
 auto operator/(E1 &&A, E2 &&B) {
   return DivideExpr(std::forward<E1>(A), std::forward<E2>(B));
 }
