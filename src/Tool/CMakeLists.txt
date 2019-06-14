@@ -6,4 +6,4 @@ set(CURR_SOURCES
 
 add_executable(ckg-tool ${CURR_SOURCES})
 
-target_link_libraries(ckg-tool CKGSourceParser CKGKernelGen)
+target_link_libraries(ckg-tool CKGSourceParser CKGKernelGen CKGKernelWriter)

@@ -136,7 +136,7 @@ void KernelManager::getKernelWrapperDefStr(uint32_t I,
   OS << K.OutputTensorType.DataType << "* " << K.OutputParam << ") {\n"
      << "\t";
   getKernelCallStr(I, OS);
-  OS << "\n\tcudaDeviceSynchronize();\n}";
+  OS << "\n}";
 }
 
 uint32_t KernelManager::getNumOfElems(const TensorType &T) const {

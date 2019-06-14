@@ -1,5 +1,5 @@
 #include "SourceParser.h"
-#include <iostream>
+
 namespace Cuda {
 
 std::vector<std::string> *MyASTVisitor::mTemplateList = nullptr;
@@ -30,7 +30,8 @@ bool MyASTVisitor::isValidCudaKernelGenMethod(clang::CXXMethodDecl *D) const {
 void MyASTVisitor::processKernelMethod(clang::CXXMethodDecl *D) {
   clang::PrintingPolicy P{clang::LangOptions()};
   P.adjustForCPlusPlus();
-  auto &Expr = mTemplateList->emplace_back(D->getThisType().getAsString(P));
+  mTemplateList->push_back(D->getThisType().getAsString(P));
+  auto &Expr = mTemplateList->back();
   Expr.erase(Expr.end() - 2, Expr.end());
 }
 

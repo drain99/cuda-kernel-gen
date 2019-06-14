@@ -74,12 +74,10 @@ public:
 
   using OutputType = OT;
 
-  CUDAKERNELGEN OutputType eval() {
+  CUDAKERNELGEN OT eval() {
     OT result(0);
-    ////////////////////////////////
-
-    ////////////////////////////////
-    cudaDeviceSynchronize();
+	/*AddExpr Call Space*/
+	cudaDeviceSynchronize();
     return result;
   }
 };
@@ -121,12 +119,10 @@ public:
 
   using OutputType = OT;
 
-  CUDAKERNELGEN OutputType eval() {
+  CUDAKERNELGEN OT eval() {
     OT result(0);
-    ////////////////////////////////
-
-    ////////////////////////////////
-    cudaDeviceSynchronize();
+	/*SubtractExpr Call Space*/
+	cudaDeviceSynchronize();
     return result;
   }
 };
@@ -170,21 +166,8 @@ public:
 
   CUDAKERNELGEN OT eval() {
     OT result(0);
-    ////////////////////////////////
-    if constexpr (std::is_same_v<
-                      MultiplyExpr<E1, E2>,
-                      MultiplyExpr<AddExpr<Tensor<int, 100>, Tensor<int, 100>,
-                                           Tensor<int, 100>>,
-                                   AddExpr<Tensor<int, 100>, Tensor<int, 100>,
-                                           Tensor<int, 100>>,
-                                   Tensor<int, 100>>>) {
-      kernel_wrapper__0((*this).mExpr1.mExpr1.data(),
-                        (*this).mExpr1.mExpr2.data(),
-                        (*this).mExpr2.mExpr1.data(),
-                        (*this).mExpr2.mExpr2.data(), result.data());
-    }
-    ////////////////////////////////
-    cudaDeviceSynchronize();
+	/*MultiplyExpr Call Space*/
+	cudaDeviceSynchronize();
     return result;
   }
 };
@@ -226,12 +209,10 @@ public:
 
   using OutputType = OT;
 
-  CUDAKERNELGEN OutputType eval() {
+  CUDAKERNELGEN OT eval() {
     OT result(0);
-    ////////////////////////////////
-
-    ////////////////////////////////
-    cudaDeviceSynchronize();
+	/*DivideExpr Call Space*/
+	cudaDeviceSynchronize();
     return result;
   }
 };
