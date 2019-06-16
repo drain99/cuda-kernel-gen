@@ -3,7 +3,7 @@
 
 #include "Expr.h"
 
-namespace Cuda {
+namespace ckg {
 
 class ASTVisitor {
 public:
@@ -24,6 +24,6 @@ public:
   virtual void visit(Expr &E);
 };
 
-} // namespace Cuda
+} // namespace ckg
 
 #endif // !_AST_VISITOR_H_

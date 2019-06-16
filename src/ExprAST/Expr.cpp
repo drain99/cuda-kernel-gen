@@ -1,7 +1,7 @@
 #include "Expr.h"
 #include "ASTVisitor.h"
 
-namespace Cuda {
+namespace ckg {
 
 Expr::Expr(const TensorType &tensorType, Expr *parent)
     : mParent(parent), mType(tensorType) {}
@@ -64,4 +64,4 @@ TensorExpr::TensorExpr(Expr *parent) : Expr(parent) {}
 
 void TensorExpr::accept(ASTVisitor &V) { V.visit(*this); }
 
-} // namespace Cuda
+} // namespace ckg

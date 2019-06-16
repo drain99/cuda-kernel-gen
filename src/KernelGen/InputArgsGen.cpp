@@ -1,8 +1,8 @@
 #include "InputArgsGen.h"
 
-namespace Cuda {
+namespace ckg {
 
-Cuda::InputArgsGen::InputArgsGen() : mTerminalIdentifier("(*this)") {}
+InputArgsGen::InputArgsGen() : mTerminalIdentifier("(*this)") {}
 
 std::vector<std::string> InputArgsGen::getInputArgs() const {
   return mInputArgs;
@@ -32,4 +32,4 @@ void InputArgsGen::popFromTerminalIdentifier() {
   mTerminalIdentifier.pop_back();
 }
 
-} // namespace Cuda
+} // namespace ckg

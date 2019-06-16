@@ -1,6 +1,6 @@
 #include <ASTVisitor.h>
 
-namespace Cuda {
+namespace ckg {
 
 ASTVisitor::~ASTVisitor() {}
 
@@ -18,4 +18,4 @@ void ASTVisitor::visit(OperationExpr &E) { visit(static_cast<Expr &>(E)); }
 
 void ASTVisitor::visit(Expr &E) {}
 
-} // namespace Cuda
+} // namespace ckg

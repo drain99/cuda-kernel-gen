@@ -7,7 +7,7 @@
 #include "KernelContext.h"
 #include "ASTContext.h"
 
-namespace Cuda {
+namespace ckg {
 
 class KernelManager {
 private:
@@ -42,6 +42,6 @@ private:
   uint32_t getNumOfElems(const TensorType &T) const;
 };
 
-} // namespace Cuda
+} // namespace ckg
 
 #endif // !_KERNEL_MANAGER_H_

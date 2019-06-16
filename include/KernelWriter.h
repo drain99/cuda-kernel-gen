@@ -3,33 +3,34 @@
 
 #include <string>
 #include <vector>
+#include <filesystem>
 
 #include "KernelManager.h"
 
-namespace Cuda {
+namespace fs = std::filesystem;
+
+namespace ckg {
 
 class KernelWriter {
 private:
-  std::vector<std::string> mUserSources;
-  std::string mPathToIncludeDir;
+  fs::path mCkgFolder;
   KernelManager mKernelManager;
 
 public:
-  KernelWriter(const std::vector<std::string> &userSources,
-               const std::string &pathTOIncludeDir,
+  KernelWriter(const fs::path& ckgFolder,
                const KernelManager &kernelManager);
 
-  void writeKernelsHeader();
+  void writeKernelsHeader() const;
 
-  void writeKernelWrappersHeader();
+  void writeKernelWrappersHeader() const;
 
-  void writeKernelsSource();
+  void writeKernelsSource() const;
 
-  void writeKernelWrappersSource();
+  void writeKernelWrappersSource() const;
 
-  void writeKernelCalls();
+  void writeKernelCalls() const;
 };
 
-} // namespace Cuda
+} // namespace ckg
 
 #endif // !_KERNEL_WRITER_H_

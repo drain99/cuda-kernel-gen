@@ -6,7 +6,7 @@
 
 #include "ASTVisitor.h"
 
-namespace Cuda {
+namespace ckg {
 
 class KernelExprGen : public ASTVisitor {
 private:

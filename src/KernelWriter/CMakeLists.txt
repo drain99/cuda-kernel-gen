@@ -2,6 +2,7 @@ cmake_minimum_required (VERSION 3.8)
 
 set(CURR_SOURCES 
 	"KernelWriter.cpp"
+	"FileHelper.cpp"
 )
 
 add_library(CKGKernelWriter STATIC ${CURR_SOURCES})

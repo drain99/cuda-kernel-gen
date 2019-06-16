@@ -4,13 +4,13 @@
 #include <string>
 #include <llvm/ADT/SmallVector.h>
 
-namespace Cuda {
+namespace ckg {
 
 struct TensorType {
   std::string DataType;
   llvm::SmallVector<uint32_t, 2> Dimensions;
 };
 
-} // namespace Cuda
+} // namespace ckg
 
 #endif // !_TENSOR_TYPE_H_

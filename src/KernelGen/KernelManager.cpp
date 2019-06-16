@@ -4,7 +4,7 @@
 #include "InputTypesGen.h"
 #include "KernelExprGen.h"
 
-namespace Cuda {
+namespace ckg {
 
 uint32_t KernelManager::createNewKernel(ASTContext &C, const std::string& exprTemplate) {
   auto &K = mKernels.emplace_back();
@@ -148,4 +148,4 @@ uint32_t KernelManager::getNumOfElems(const TensorType &T) const {
   return R;
 }
 
-} // namespace Cuda
+} // namespace ckg

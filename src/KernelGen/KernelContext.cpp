@@ -1,9 +1,9 @@
 #include "KernelContext.h"
 
-namespace Cuda {
+namespace ckg {
 
 uint32_t KernelContext::ID = 0;
 
 KernelContext::KernelContext() : FuncID(ID++) {}
 
-} // namespace Cuda
+} // namespace ckg

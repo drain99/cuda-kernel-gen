@@ -5,7 +5,7 @@
 #include <clang/Tooling/Tooling.h>
 #include <clang/AST/RecursiveASTVisitor.h>
 
-namespace Cuda {
+namespace ckg {
 
 class MyASTVisitor : public clang::RecursiveASTVisitor<MyASTVisitor> {
 private:
@@ -43,6 +43,6 @@ public:
                            std::vector<std::string> &templateList);
 };
 
-} // namespace Cuda
+} // namespace ckg
 
 #endif // !_SOURCE_PARSER_H_

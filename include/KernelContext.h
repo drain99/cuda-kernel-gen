@@ -5,7 +5,7 @@
 
 #include "TensorType.h"
 
-namespace Cuda {
+namespace ckg {
 
 struct KernelContext {
 public:
@@ -28,6 +28,6 @@ private:
   static uint32_t ID;
 };
 
-} // namespace Cuda
+} // namespace ckg
 
 #endif // !_KERNEL_CONTEXT_H_

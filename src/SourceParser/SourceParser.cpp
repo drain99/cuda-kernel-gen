@@ -1,6 +1,6 @@
 #include "SourceParser.h"
 
-namespace Cuda {
+namespace ckg {
 
 std::vector<std::string> *MyASTVisitor::mTemplateList = nullptr;
 
@@ -57,4 +57,4 @@ void SourceParser::parseSources(std::vector<std::string> sourcePaths,
   Tool.run(clang::tooling::newFrontendActionFactory<MyFrontendAction>().get());
 }
 
-} // namespace Cuda
+} // namespace ckg

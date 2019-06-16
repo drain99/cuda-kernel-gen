@@ -1,7 +1,7 @@
 #include "TemplateParser.h"
 #include <iostream>
 
-namespace Cuda {
+namespace ckg {
 
 TemplateParser::TemplateParser(const std::string &exprTemplate)
     : mET(exprTemplate) {}
@@ -101,4 +101,4 @@ TensorType TemplateParser::parseTensorExpr(llvm::StringRef T) {
   return TT;
 }
 
-} // namespace Cuda
+} // namespace ckg

@@ -1,6 +1,6 @@
 #include "InputTypesGen.h"
 #include <iostream>
-namespace Cuda {
+namespace ckg {
 
 std::vector<TensorType> InputTypesGen::getInputTypes() const {
   return mInputTypes;

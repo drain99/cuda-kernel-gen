@@ -1,6 +1,6 @@
 #include "InputParamsGen.h"
 
-namespace Cuda {
+namespace ckg {
 
 InputParamsGen::InputParamsGen() : mTerminalIdentifier("in") {}
 
@@ -33,4 +33,4 @@ void InputParamsGen::popFromTerminalIdentifier() {
   mTerminalIdentifier.pop_back();
 }
 
-} // namespace Cuda
+} // namespace ckg

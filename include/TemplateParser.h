@@ -6,7 +6,7 @@
 
 #include "ASTContext.h"
 
-namespace Cuda {
+namespace ckg {
 
 class TemplateParser {
 private:
@@ -23,6 +23,6 @@ private:
   TensorType parseTensorExpr(llvm::StringRef T);
 };
 
-} // namespace Cuda
+} // namespace ckg
 
 #endif // !_TEMPLATE_PARSER_H_

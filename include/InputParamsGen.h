@@ -6,7 +6,7 @@
 
 #include "ASTVisitor.h"
 
-namespace Cuda {
+namespace ckg {
 
 class InputParamsGen : public ASTVisitor {
 private:
@@ -28,6 +28,6 @@ private:
   void popFromTerminalIdentifier();
 };
 
-} // namespace Cuda
+} // namespace ckg
 
 #endif // !_INPUT_PARAMS_GEN_H_

@@ -4,7 +4,7 @@
 #include "ASTVisitor.h"
 #include "KernelContext.h"
 
-namespace Cuda {
+namespace ckg {
 
 class InputTypesGen : public ASTVisitor {
 private:
@@ -18,6 +18,6 @@ public:
   virtual void visit(TensorExpr &E) override;
 };
 
-} // namespace Cuda
+} // namespace ckg
 
 #endif // !_INPUT_TYPES_GEN_H_

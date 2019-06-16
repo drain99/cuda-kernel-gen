@@ -1,6 +1,6 @@
 #include "KernelExprGen.h"
 
-namespace Cuda {
+namespace ckg {
 
 KernelExprGen::KernelExprGen() : mTerminalIdentifier("in") {}
 
@@ -44,4 +44,4 @@ void KernelExprGen::popFromIdentifier() {
   mTerminalIdentifier.pop_back();
 }
 
-} // namespace Cuda
+} // namespace ckg

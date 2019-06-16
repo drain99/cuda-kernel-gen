@@ -8,7 +8,7 @@
 
 #include "Expr.h"
 
-namespace Cuda {
+namespace ckg {
 
 class ASTVisitor;
 
@@ -43,6 +43,6 @@ inline Expr *ASTContext::addNewExpr(Args &&... args) {
   return mExprs.back().get();
 }
 
-} // namespace Cuda
+} // namespace ckg
 
 #endif // !_AST_CONTEXT_H_

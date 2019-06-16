@@ -7,7 +7,7 @@
 
 #include "TensorType.h"
 
-namespace Cuda {
+namespace ckg {
 
 class ASTVisitor;
 
@@ -108,6 +108,6 @@ template <typename... Ts>
 constexpr bool IsTensorExpr_v =
     std::conjunction_v<std::is_base_of<TensorExprImpl, Ts>...>;
 
-} // namespace Cuda
+} // namespace ckg
 
 #endif // !_EXPR_H_
