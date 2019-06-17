@@ -35,8 +35,27 @@ void FileHelper::initiateCkgFolder(const fs::path &ckgFolder) {
 }
 
 void FileHelper::revertOriginals(const fs::path &ckgFolder) {
-  FileHelper::copyFile(ckgFolder / "include" / "EtExpr.h",
-                       ckgFolder / "temp" / "OriginalEtExpr.h");
+  FileHelper::copyFile(ckgFolder / "temp" / "CopyEtExpr.h",
+                       ckgFolder / "include" / "EtExpr.h");
+  std::ifstream Ifs(ckgFolder / "temp" / "CopyEtExpr.h", std::ios::in);
+  std::ofstream Ofs(ckgFolder / "include" / "EtExpr.h", std::ios::out);
+  std::string Line;
+  bool InsideCallSpace = false;
+  while (std::getline(Ifs, Line)) {
+    if (Line == "\tcudaDeviceSynchronize();") {
+      Ofs << Line << std::endl;
+      InsideCallSpace = false;
+    } else if ((Line.find("\t/*") == 0) &&
+               (Line.rfind("Expr Call Space*/") == Line.size() - 17)) {
+      Ofs << Line << std::endl;
+      InsideCallSpace = true;
+    }
+    else if (!InsideCallSpace) {
+      Ofs << Line << std::endl;
+    }
+  }
+  Ifs.close();
+  Ofs.close();
 }
 
 } // namespace ckg

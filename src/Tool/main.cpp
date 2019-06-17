@@ -17,8 +17,25 @@ using namespace ckg;
 namespace cl = llvm::cl;
 namespace tooling = clang::tooling;
 
+static cl::OptionCategory MyToolCatagory("CudaKernelGen options");
+static cl::opt<std::string>
+    CkgFolderStr("ckg-path", cl::Required,
+                 cl::desc("Specify top-level ckg folder"),
+                 cl::value_desc("ckg-folder-path"), cl::cat(MyToolCatagory));
+static cl::opt<bool>
+    CompileOnlyFlag("c", cl::init(false),
+                    cl::desc("Stop after compilation without linking"),
+                    cl::cat(MyToolCatagory));
+static cl::opt<bool> QuietFlag("q", cl::init(false),
+                               cl::desc("Hide progress messages"),
+                               cl::cat(MyToolCatagory));
+static cl::opt<bool> RevertFlag("revert", cl::init(false),
+                                cl::desc("Revert changes made to EtExpr.h"),
+                                cl::cat(MyToolCatagory));
+
 std::vector<std::string> parseSourceFiles(tooling::CommonOptionsParser &OP) {
-  std::cout << "Parsing sources..." << std::endl;
+  if (!QuietFlag)
+    std::cout << "Parsing sources..." << std::endl;
   std::vector<std::string> templateList;
   SourceParser::parseSources(OP.getSourcePathList(), OP.getCompilations(),
                              templateList);
@@ -36,7 +53,8 @@ void removeSpaces(std::string &S) {
 }
 
 KernelManager generateKernels(std::vector<std::string> &templateList) {
-  std::cout << "Generating kernels..." << std::endl;
+  if (!QuietFlag)
+    std::cout << "Generating kernels..." << std::endl;
   KernelManager KM;
   for (auto &&S : templateList) {
     removeSpaces(S);
@@ -48,7 +66,8 @@ KernelManager generateKernels(std::vector<std::string> &templateList) {
 }
 
 void writeKernels(KernelManager &KM, const fs::path &CkgFolder) {
-  std::cout << "Writing kernels..." << std::endl;
+  if (!QuietFlag)
+    std::cout << "Writing kernels..." << std::endl;
   KernelWriter KW(CkgFolder, KM);
   KW.writeKernelCalls();
   KW.writeKernelsHeader();
@@ -58,7 +77,8 @@ void writeKernels(KernelManager &KM, const fs::path &CkgFolder) {
 }
 
 void compileKernels(const fs::path &ckgFolder) {
-  std::cout << "Compiling kernels..." << std::endl;
+  if (!QuietFlag)
+    std::cout << "Compiling kernels..." << std::endl;
   std::string NvccCommand =
       "nvcc -c -O2 -odir=" + (ckgFolder / "obj").string() + " " +
       (ckgFolder / "include" / "MyKernels.cu").string() + " " +
@@ -68,7 +88,8 @@ void compileKernels(const fs::path &ckgFolder) {
 
 void compileAndLink(const fs::path &ckgFolder,
                     const std::vector<std::string> &sourceFiles) {
-  std::cout << "Linking everything..." << std::endl;
+  if (!QuietFlag)
+    std::cout << "Linking everything..." << std::endl;
   std::string ClangCommand = "clang++ -O2 -std=c++17 ";
   fs::path CudaPath = std::getenv("CUDA_PATH");
   ClangCommand += "-I\"" + (CudaPath / "include").string() + "\" ";
@@ -83,23 +104,27 @@ void compileAndLink(const fs::path &ckgFolder,
   system(ClangCommand.c_str());
 }
 
-static cl::OptionCategory MyToolCatagory("CudaKernelGen options");
-static cl::opt<std::string>
-    CkgFolderStr("ckg-path", cl::Required,
-                 cl::desc("Specify top-level ckg folder"),
-                 cl::value_desc("ckg-folder-path"), cl::cat(MyToolCatagory));
-
-int main(int argc, const char **argv) {
+    int main(int argc, const char **argv) {
   tooling::CommonOptionsParser OP(argc, argv, MyToolCatagory);
   fs::path CkgFolder = fs::canonical(CkgFolderStr.getValue());
+
+  if (RevertFlag && CompileOnlyFlag) {
+    std::cout << "Warning: EtExpr.h is reverted without linking it against the "
+                 "sources."
+              << std::endl;
+  }
 
   FileHelper::initiateCkgFolder(CkgFolder);
   auto templateList = parseSourceFiles(OP);
   auto KM = generateKernels(templateList);
   writeKernels(KM, CkgFolder);
   compileKernels(CkgFolder);
-  compileAndLink(CkgFolder, OP.getSourcePathList());
-  FileHelper::revertOriginals(CkgFolder);
+  if (!CompileOnlyFlag) {
+    compileAndLink(CkgFolder, OP.getSourcePathList());
+  }
+  if (RevertFlag) {
+    FileHelper::revertOriginals(CkgFolder);
+  }
   FileHelper::deleteTempFolder(CkgFolder);
 
   return 0;

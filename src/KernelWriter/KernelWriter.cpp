@@ -51,38 +51,32 @@ void KernelWriter::writeKernelWrappersSource() const {
 }
 
 void KernelWriter::writeKernelCalls() const {
-  FileHelper::copyFile(mCkgFolder / "temp" / "OriginalEtExpr.h",
-                       mCkgFolder / "include" / "EtExpr.h");
   for (int32_t I = 0; I < mKernelManager.size(); ++I) {
-    std::ifstream Ifs(mCkgFolder / "include" / "EtExpr.h", std::ios::in);
-    std::ofstream Ofs(mCkgFolder / "temp" / "BackupEtExpr.h", std::ios::out);
+    FileHelper::copyFile(mCkgFolder / "temp" / "BackupEtExpr.h",
+                         mCkgFolder / "include" / "EtExpr.h");
+    std::ifstream Ifs(mCkgFolder / "temp" / "BackupEtExpr.h", std::ios::in);
+    std::ofstream Ofs(mCkgFolder / "include" / "EtExpr.h", std::ios::out);
     auto &exprTemplate = mKernelManager.get(I).FullExprTemplate;
     auto Pos = exprTemplate.find("Expr");
     std::string CallSpaceStr =
         "\t/*" + exprTemplate.substr(0, Pos + 4) + " Call Space*/";
     std::string Line;
-    bool FoundCallSpace = false, FoundDeviceSync = false;
+    bool InsideCallSpace = false;
     while (std::getline(Ifs, Line)) {
-      if (Line == "\tcudaDeviceSynchronize();" && FoundCallSpace) {
-        FoundDeviceSync = true;
-      }
-      if (FoundCallSpace == FoundDeviceSync) {
+      if (Line == "\tcudaDeviceSynchronize();") {
         Ofs << Line << std::endl;
-      }
-      if (Line == CallSpaceStr) {
-        FoundCallSpace = true;
-        Ofs << "\tif constexpr (std::is_same_v<std::decay_t<decltype(*this)>,"
-            << exprTemplate << ">) {\n\t";
+        InsideCallSpace = false;
+      } else if (Line == CallSpaceStr) {
+        Ofs << Line << std::endl;
+        InsideCallSpace = true;
+        Ofs << "\tif constexpr "
+               "(std::is_same_v<std::decay_t<decltype(*this)>,"
+            << exprTemplate << ">) {\n\t\t";
         mKernelManager.getKernelWrapperCallStr(I, Ofs);
         Ofs << "\n\t}\n";
+      } else if (!InsideCallSpace) {
+        Ofs << Line << std::endl;
       }
-    }
-    Ifs.close();
-    Ofs.close();
-    Ifs.open(mCkgFolder / "temp" / "BackupEtExpr.h", std::ios::in);
-    Ofs.open(mCkgFolder / "include" / "EtExpr.h", std::ios::out);
-    while (std::getline(Ifs, Line)) {
-      Ofs << Line << std::endl;
     }
     Ifs.close();
     Ofs.close();
