@@ -1,3 +1,4 @@
+#include <cstdlib>
 #include <filesystem>
 #include <iostream>
 #include <sstream>
@@ -65,6 +66,23 @@ void compileKernels(const fs::path &ckgFolder) {
   system(NvccCommand.c_str());
 }
 
+void compileAndLink(const fs::path &ckgFolder,
+                    const std::vector<std::string> &sourceFiles) {
+  std::cout << "Linking everything..." << std::endl;
+  std::string ClangCommand = "clang++ -O2 -std=c++17 ";
+  fs::path CudaPath = std::getenv("CUDA_PATH");
+  ClangCommand += "-I\"" + (CudaPath / "include").string() + "\" ";
+  ClangCommand += "-I\"" + (ckgFolder / "include").string() + "\" ";
+  ClangCommand +=
+      "-l\"" + (CudaPath / "lib" / "x64" / "cudart.lib").string() + "\" ";
+  for (auto &&source : sourceFiles) {
+    ClangCommand += source + " ";
+  }
+  ClangCommand += (ckgFolder / "obj" / "MyKernels.obj").string() + " ";
+  ClangCommand += (ckgFolder / "obj" / "MyKernelWrappers.obj").string() + " ";
+  system(ClangCommand.c_str());
+}
+
 static cl::OptionCategory MyToolCatagory("CudaKernelGen options");
 static cl::opt<std::string>
     CkgFolderStr("ckg-path", cl::Required,
@@ -74,12 +92,13 @@ static cl::opt<std::string>
 int main(int argc, const char **argv) {
   tooling::CommonOptionsParser OP(argc, argv, MyToolCatagory);
   fs::path CkgFolder = fs::canonical(CkgFolderStr.getValue());
-  
+
   FileHelper::initiateCkgFolder(CkgFolder);
   auto templateList = parseSourceFiles(OP);
   auto KM = generateKernels(templateList);
   writeKernels(KM, CkgFolder);
   compileKernels(CkgFolder);
+  compileAndLink(CkgFolder, OP.getSourcePathList());
   FileHelper::revertOriginals(CkgFolder);
   FileHelper::deleteTempFolder(CkgFolder);
 
