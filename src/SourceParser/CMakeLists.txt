@@ -325,6 +325,7 @@ target_include_directories(CKGSourceParser PUBLIC ${LLVM_INCLUDE_DIRS})
 add_definitions(${LLVM_DEFINITIONS})
 #target_compile_definitions(CKGSourceParser PUBLIC ${LLVM_DEFINITIONS})
 
-target_link_directories(CKGSourceParser PUBLIC "D:\\LLVM\\Builds\\llvm_cuda_kernel_gen\\install\\lib64")
+# Manually set lib64 install path
+target_link_directories(CKGSourceParser PUBLIC "D:\\LLVM(modified)\\install\\lib64")
 
 target_link_libraries(CKGSourceParser CKGExprAST ${NATIVE_LIBS} ${LLVM_CLANG_LIBS})

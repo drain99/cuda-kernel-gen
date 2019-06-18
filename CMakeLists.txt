@@ -1,6 +1,7 @@
 ﻿cmake_minimum_required (VERSION 3.8)
 
-set(LLVM_DIR "D:\\LLVM\\Builds\\llvm_cuda_kernel_gen\\install\\lib64\\cmake\\llvm")
+# set llvm_dir manually.
+set(LLVM_DIR "D:\\LLVM(modified)\\install\\lib64\\cmake\\llvm")
 find_package(LLVM REQUIRED CONFIG)
 
 project("CudaKernelGen")
