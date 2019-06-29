@@ -124,9 +124,6 @@ public:
   CUDAKERNELGEN OT eval() {
     OT result(0);
 	/*SubtractExpr Call Space*/
-	if constexpr (std::is_same_v<std::decay_t<decltype(*this)>,SubtractExpr<AddExpr<MultiplyExpr<AddExpr<Tensor<int,100>,Tensor<int,100>,Tensor<int,100>>,SubtractExpr<AddExpr<Tensor<int,100>,Tensor<int,100>,Tensor<int,100>>,Tensor<float,100>,Tensor<float,100>>,Tensor<float,100>>,Tensor<int,100>,Tensor<float,100>>,Tensor<int,100>,Tensor<float,100>>>) {
-		kernel_wrapper__1((*this).mExpr1.mExpr1.mExpr1.mExpr1.data(), (*this).mExpr1.mExpr1.mExpr1.mExpr2.data(), (*this).mExpr1.mExpr1.mExpr2.mExpr1.mExpr1.data(), (*this).mExpr1.mExpr1.mExpr2.mExpr1.mExpr2.data(), (*this).mExpr1.mExpr1.mExpr2.mExpr2.data(), (*this).mExpr1.mExpr2.data(), (*this).mExpr2.data(), result.data());
-	}
 	cudaDeviceSynchronize();
     return result;
   }
@@ -172,9 +169,6 @@ public:
   CUDAKERNELGEN OT eval() {
     OT result(0);
 	/*MultiplyExpr Call Space*/
-	if constexpr (std::is_same_v<std::decay_t<decltype(*this)>,MultiplyExpr<AddExpr<Tensor<int,100>,Tensor<int,100>,Tensor<int,100>>,SubtractExpr<AddExpr<Tensor<int,100>,Tensor<int,100>,Tensor<int,100>>,Tensor<float,100>,Tensor<float,100>>,Tensor<float,100>>>) {
-		kernel_wrapper__0((*this).mExpr1.mExpr1.data(), (*this).mExpr1.mExpr2.data(), (*this).mExpr2.mExpr1.mExpr1.data(), (*this).mExpr2.mExpr1.mExpr2.data(), (*this).mExpr2.mExpr2.data(), result.data());
-	}
 	cudaDeviceSynchronize();
     return result;
   }
