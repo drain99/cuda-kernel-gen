@@ -1,15 +1,13 @@
-﻿cmake_minimum_required (VERSION 3.8)
+﻿cmake_minimum_required(VERSION 3.8)
 
-# set llvm_dir manually.
-set(LLVM_DIR "D:\\LLVM(modified)\\install\\lib64\\cmake\\llvm")
+project("cuda-kernel-gen" LANGUAGES C CXX)
+
 find_package(LLVM REQUIRED CONFIG)
+find_package(Clang REQUIRED CONFIG)
 
-project("CudaKernelGen")
+set(CMAKE_CXX_STANDARD 17)
 
-include_directories("include")
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-add_subdirectory("src/ExprAST")
-add_subdirectory("src/KernelGen")
-add_subdirectory("src/KernelWriter")
-add_subdirectory("src/SourceParser")
-add_subdirectory("src/Tool")
+add_subdirectory("lib")
+add_subdirectory("tool")

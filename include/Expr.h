@@ -52,7 +52,7 @@ public:
   TensorType getInputType(int32_t index);
 };
 
-class AddExpr : public OperationExpr, private OperationExprImpl {
+class AddExpr : public OperationExpr {
 public:
   AddExpr(const TensorType &tensorType, Expr *parent = nullptr);
 
@@ -61,7 +61,7 @@ public:
   virtual void accept(ASTVisitor &V) override;
 };
 
-class SubtractExpr : public OperationExpr, private OperationExprImpl {
+class SubtractExpr : public OperationExpr {
 public:
   SubtractExpr(const TensorType &tensorType, Expr *parent = nullptr);
 
@@ -70,7 +70,7 @@ public:
   virtual void accept(ASTVisitor &V) override;
 };
 
-class MultiplyExpr : public OperationExpr, private OperationExprImpl {
+class MultiplyExpr : public OperationExpr {
 public:
   MultiplyExpr(const TensorType &tensorType, Expr *parent = nullptr);
 
@@ -79,7 +79,7 @@ public:
   virtual void accept(ASTVisitor &V) override;
 };
 
-class DivideExpr : public OperationExpr, private OperationExprImpl {
+class DivideExpr : public OperationExpr {
 public:
   DivideExpr(const TensorType &tensorType, Expr *parent = nullptr);
 

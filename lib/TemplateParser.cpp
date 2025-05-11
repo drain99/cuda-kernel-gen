@@ -1,5 +1,4 @@
 #include "TemplateParser.h"
-#include <iostream>
 
 namespace ckg {
 
@@ -93,7 +92,7 @@ TensorType TemplateParser::parseTensorExpr(llvm::StringRef T) {
         isFirst = false;
       } else {
         TT.Dimensions.push_back(std::stoi(
-            tensorName.substr(L, I - L + (I + 1 == tensorName.size()))));
+            tensorName.substr(L, I - L + (I + 1 == tensorName.size())).str()));
       }
       L = I + 1;
     }
